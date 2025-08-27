@@ -10,25 +10,26 @@ datasource db {
 model User {
   id        String        @id         @default(uuid())
   email     String
-  website   Websites[]
   service   Service[]
+  website   Websites[]
 }
 
 model Websites {
   id        String        @id         @default(uuid())
   url       String        @unique
   userId    String
+  service   Service?
+
   user      User          @relation(fields: [userId], references: [id])
-  service   Service[]
 }
 
 model Service {
   id        String        @id         @default(uuid())
-  phone     Int           @unique
+  phone     String           @unique
   email     String        @unique
-  websiteId String 
-  userId    String
+  websiteId String?       @unique
+  userId    String        
 
   user      User          @relation(fields: [userId], references: [id])
-  website   Websites      @relation(fields: [websiteId], references: [id])
+  website   Websites?     @relation(fields: [websiteId], references: [id])
 }
