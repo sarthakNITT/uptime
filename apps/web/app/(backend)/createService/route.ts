@@ -1,3 +1,4 @@
+import { currentUser } from "@clerk/nextjs/server";
 import { PC } from "@repo/db/connect";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -6,7 +7,16 @@ export async function POST (req: NextRequest) {
         console.log("Connected to db");
     });
     const {phone, email, url} = await req.json();
-    const userId = "1";
+
+    const user = await currentUser();
+    const findDb = await PC.user.findFirst({
+        where: {username: user?.username ?? ""}
+    })
+    console.log(user?.username);
+    console.log(findDb?.username);
+    if (!findDb?.id) {
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
     console.log(1);
     try {
         await PC.$transaction(async (tx) => {
@@ -14,14 +24,14 @@ export async function POST (req: NextRequest) {
                 data: {
                     phone: phone,
                     email: email,
-                    userId: userId,
+                    userId: findDb?.id,
                 }
             })
         
             const website = await tx.websites.create({
                 data: {
                     url: url,
-                    user: {connect: {id: userId}}
+                    user: {connect: {id: findDb?.id}}
                 }
             })
         
