@@ -11,6 +11,7 @@ model User {
   id        String        @id         @default(uuid())
   email     String
   website   Websites[]
+  service   Service[]
 }
 
 model Websites {
@@ -18,4 +19,16 @@ model Websites {
   url       String        @unique
   userId    String
   user      User          @relation(fields: [userId], references: [id])
+  service   Service[]
+}
+
+model Service {
+  id        String        @id         @default(uuid())
+  phone     Int           @unique
+  email     String        @unique
+  websiteId String 
+  userId    String
+
+  user      User          @relation(fields: [userId], references: [id])
+  website   Websites      @relation(fields: [websiteId], references: [id])
 }
