@@ -1,26 +1,17 @@
-"use client"
-import axios from "axios"
-import { useState } from "react"
+'use client';
 
-export default function Home () {
-  const [phone, setPhone] = useState<string>("")
-  const [email, setEmail] = useState<string>("")
-  const [url, setUrl] = useState<string>("")
+import HeroSection from '../components/HeroSection';
+import FeaturesSection from '../components/FeaturesSection';
+import HowItWorksSection from '../components/HowItWorksSection';
+import Footer from '../components/Footer';
 
-  async function handleClick() {
-    const res = await axios.post("https://infinitely-full-glider.ngrok-free.app/createService", {
-      phone: phone,
-      email: email,
-      url: url
-    })
-    console.log(res);
-  }
+export default function Home() {
   return (
-    <div>
-      <input placeholder="phone" value={phone} onChange={(e)=>setPhone(e.target.value)}/>
-      <input placeholder="email" value={email} onChange={(e)=>setEmail(e.target.value)}/>
-      <input placeholder="url" value={url} onChange={(e)=>setUrl(e.target.value)}/>
-      <button onClick={handleClick}>Send req</button>
-    </div>
-  )
+    <main className="min-h-screen">
+      <HeroSection />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <Footer />
+    </main>
+  );
 }
