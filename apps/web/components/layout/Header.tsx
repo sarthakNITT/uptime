@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Activity, Menu, X, User, Settings, LogOut } from 'lucide-react';
+import { Activity, Menu, X } from 'lucide-react';
 import { useAccessibility } from '../../providers/AccessibilityProvider';
 import {
   SignInButton,
@@ -16,7 +16,7 @@ import {
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  // const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { animationsEnabled } = useAccessibility();
 
   useEffect(() => {
