@@ -41,7 +41,7 @@ export function FeaturesSection() {
   const { animationsEnabled } = useAccessibility();
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-bg-800/30">
+    <section className="py-24 px-4 mx-40 sm:px-6 lg:px-8 bg-bg-800/30">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-text-100 mb-4">
