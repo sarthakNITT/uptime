@@ -18,11 +18,9 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    // Check for prefers-reduced-motion
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
     
-    // Load saved preferences
     const savedAnimations = localStorage.getItem('uptime_animations_enabled');
     const savedScrollEffects = localStorage.getItem('uptime_scroll_effects_enabled');
     
@@ -38,7 +36,6 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
       setScrollEffectsEnabled(false);
     }
 
-    // Listen for changes
     const handleChange = () => {
       setPrefersReducedMotion(mediaQuery.matches);
       if (mediaQuery.matches && savedAnimations === null) {
@@ -54,7 +51,6 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Apply global classes based on preferences
     const body = document.body;
     if (!animationsEnabled) {
       body.classList.add('animations-disabled');

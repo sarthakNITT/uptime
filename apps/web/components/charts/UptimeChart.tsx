@@ -3,15 +3,14 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const UptimeChart = () => {
-  // Generate mock data for the last 30 days
   const data = Array.from({ length: 30 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() - (29 - i));
     
     return {
       date: date.toLocaleDateString(),
-      uptime: 95 + Math.random() * 5, // 95-100% uptime
-      responseTime: 100 + Math.random() * 200, // 100-300ms response time
+      uptime: 95 + Math.random() * 5,
+      responseTime: 100 + Math.random() * 200,
     };
   });
 

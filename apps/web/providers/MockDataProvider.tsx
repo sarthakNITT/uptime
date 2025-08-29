@@ -69,24 +69,20 @@ export function MockDataProvider({ children }: { children: ReactNode }) {
   const [statusPages, setStatusPages] = useState<StatusPage[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Initialize data on client load
   useEffect(() => {
     const initData = async () => {
       try {
-        // Check if data exists in localStorage
         const existingMonitors = localStorage.getItem('uptime_monitors');
         const existingChecks = localStorage.getItem('uptime_checks');
         const existingAlerts = localStorage.getItem('uptime_alerts');
         const existingStatusPages = localStorage.getItem('uptime_statuspages');
 
         if (existingMonitors && existingChecks && existingAlerts && existingStatusPages) {
-          // Load from localStorage
           setMonitors(JSON.parse(existingMonitors));
           setChecks(JSON.parse(existingChecks));
           setAlerts(JSON.parse(existingAlerts));
           setStatusPages(JSON.parse(existingStatusPages));
         } else {
-          // Load seed data
           const [monitorsRes, checksRes, alertsRes, statusPagesRes] = await Promise.all([
             fetch('/mocks/monitors.json'),
             fetch('/mocks/checks.json'),
@@ -104,7 +100,6 @@ export function MockDataProvider({ children }: { children: ReactNode }) {
           setAlerts(alertsData);
           setStatusPages(statusPagesData);
 
-          // Save to localStorage
           localStorage.setItem('uptime_monitors', JSON.stringify(monitorsData));
           localStorage.setItem('uptime_checks', JSON.stringify(checksData));
           localStorage.setItem('uptime_alerts', JSON.stringify(alertsData));
@@ -120,7 +115,6 @@ export function MockDataProvider({ children }: { children: ReactNode }) {
     initData();
   }, []);
 
-  // Persist to localStorage on changes
   useEffect(() => {
     if (!loading) {
       localStorage.setItem('uptime_monitors', JSON.stringify(monitors));

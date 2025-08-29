@@ -1,5 +1,5 @@
 import { HeroSection } from '../components/sections/HeroSection';
-import { DashboardPreview } from '../components/sections/DashboardPreview';
+import DashboardSection from '../components/sections/Dashboard';
 import { FeaturesSection } from '../components/sections/FeaturesSection';
 import { HowItWorksSection } from '../components/sections/HowItWorksSection';
 import { TestimonialsSection } from '../components/sections/TestimonialsSection';
@@ -11,9 +11,12 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-bg-900">
       <Header />
-      <main>
+      <main className="relative">
         <HeroSection />
-        <DashboardPreview />
+
+        {/* DashboardSection contains the sticky heading + two dashboards swap */}
+        <DashboardSection />
+
         <FeaturesSection />
         <HowItWorksSection />
         <TestimonialsSection />

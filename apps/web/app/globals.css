@@ -248,3 +248,16 @@ h1,h2,h3,h4,h5,h6 { line-height: 1.15; margin: 0; }
    - If you later create a tailwind.config.ts, you can remove some of these
      manual classes in favour of generated utilities.
 */
+
+.gradient-top-padding::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.5rem; /* matches py-6 top padding */
+  pointer-events: none;
+  z-index: 20;
+  background: linear-gradient(to bottom, black, transparent);
+}
+

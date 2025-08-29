@@ -25,7 +25,6 @@ export function MonitorForm({ onClose }: MonitorFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     createMonitor({

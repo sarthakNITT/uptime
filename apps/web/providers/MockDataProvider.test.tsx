@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi} from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { MockDataProvider, useMockData } from './MockDataProvider';
 
-// Mock localStorage
 const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
@@ -10,7 +9,6 @@ const localStorageMock = {
 };
 global.localStorage = localStorageMock as any;
 
-// Mock fetch
 global.fetch = vi.fn() as unknown as typeof fetch;
 
 describe('MockDataProvider', () => {
