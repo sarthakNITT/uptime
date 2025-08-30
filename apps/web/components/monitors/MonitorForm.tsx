@@ -4,23 +4,34 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Globe } from 'lucide-react';
 import { useAccessibility } from '../../providers/AccessibilityProvider';
+import axios from "axios"
 
 interface MonitorFormProps {
   onClose: () => void;
 }
 
 export function MonitorForm({ onClose }: MonitorFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [url, setUrl] = useState<string>("");
   const { animationsEnabled } = useAccessibility();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const handleSubmit = async () => {
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const res = await axios.post("/api/createService", {
+        phone: phoneNumber,
+        email: email,
+        url: url
+      })
+      console.log(res.data);
+      onClose();
+      return;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
 
-    setIsSubmitting(false);
-    onClose();
   };
 
   const MotionDiv = animationsEnabled ? motion.div : 'div';
@@ -41,7 +52,7 @@ export function MonitorForm({ onClose }: MonitorFormProps) {
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-text-100 mb-2">
             Developer&apos;s Phone Number
@@ -49,7 +60,9 @@ export function MonitorForm({ onClose }: MonitorFormProps) {
           <input
             type="text"
             className="w-full bg-bg-900 border border-white/20 rounded-btn px-3 py-2 text-text-100 placeholder-muted-400 focus:border-accent-ice focus:ring-1 focus:ring-accent-ice transition-colors"
-            placeholder="Enter developer's name"
+            placeholder="Enter developer's Phone Number"
+            value={phoneNumber}
+            onChange={(e)=>setPhoneNumber(e.target.value)}
             required
           />
         </div>
@@ -62,6 +75,8 @@ export function MonitorForm({ onClose }: MonitorFormProps) {
             type="text"
             className="w-full bg-bg-900 border border-white/20 rounded-btn px-3 py-2 text-text-100 placeholder-muted-400 focus:border-accent-ice focus:ring-1 focus:ring-accent-ice transition-colors"
             placeholder="Enter developer's email"
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
             required
           />
         </div>
@@ -75,6 +90,8 @@ export function MonitorForm({ onClose }: MonitorFormProps) {
             type="url"
             className="w-full bg-bg-900 border border-white/20 rounded-btn px-3 py-2 text-text-100 placeholder-muted-400 focus:border-accent-ice focus:ring-1 focus:ring-accent-ice transition-colors"
             placeholder="https://example.com"
+            value={url}
+            onChange={(e)=>setUrl(e.target.value)}
             required
           />
         </div>
@@ -88,14 +105,13 @@ export function MonitorForm({ onClose }: MonitorFormProps) {
             Cancel
           </button>
           <button
-            type="submit"
-            disabled={isSubmitting}
             className="flex-1 py-2 px-4 bg-accent-ice text-black rounded-btn font-medium hover:bg-accent-ice/90 transition-colors disabled:opacity-50"
+            onClick={handleSubmit}
           >
-            {isSubmitting ? 'Creating...' : 'Create Monitor'}
+            Create Monitor
           </button>
         </div>
-      </form>
+      </div>
     </MotionDiv>
   );
 }
