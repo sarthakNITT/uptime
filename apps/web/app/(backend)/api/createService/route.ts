@@ -15,29 +15,25 @@ export async function POST (req: NextRequest) {
     console.log(user?.username);
     console.log(findDb?.username);
     if (!findDb?.id) {
-    return NextResponse.json({ message: "User not found" }, { status: 404 });
+        return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
     console.log(1);
     try {
         await PC.$transaction(async (tx) => {
-            const service = await tx.service.create({
-                data: {
-                    phone: phone,
-                    email: email,
-                    userId: findDb?.id,
-                }
-            })
-        
             const website = await tx.websites.create({
                 data: {
                     url: url,
                     user: {connect: {id: findDb?.id}}
                 }
             })
-        
-            await tx.service.update({
-                where: {id: service.id},
-                data: {websiteId: website.id}
+
+            await tx.service.create({
+                data: {
+                    phone: phone,
+                    email: email,
+                    userId: findDb?.id,
+                    websiteId: website.id
+                }
             })
         })
         

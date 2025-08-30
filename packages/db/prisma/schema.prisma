@@ -8,29 +8,34 @@ datasource db {
 }
 
 model User {
-  id        String        @id         @default(uuid())
-  username  String
-  email     String
-  service   Service[]
-  website   Websites[]
+  id              String        @id             @default(uuid())
+  username        String
+  email           String
+  createdAt       DateTime                      @default(now())
+  updatedAt       DateTime?     @updatedAt
+  service         Service[]
+  website         Websites[]
 }
 
 model Websites {
-  id        String        @id         @default(uuid())
-  url       String        @unique
-  userId    String
-  service   Service?
+  id              String        @id             @default(uuid())
+  url             String        @unique
+  userId          String
+  status          String?
+  lastChecked     DateTime?
+  responseTime    String?
+  service         Service?
 
-  user      User          @relation(fields: [userId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
 }
 
 model Service {
-  id        String        @id         @default(uuid())
-  phone     String           @unique
-  email     String        @unique
-  websiteId String?       @unique
-  userId    String        
+  id              String        @id             @default(uuid())
+  phone           String        @unique
+  email           String        @unique
+  websiteId       String?       @unique
+  userId          String        
 
-  user      User          @relation(fields: [userId], references: [id])
-  website   Websites?     @relation(fields: [websiteId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+  website         Websites?     @relation(fields: [websiteId], references: [id])
 }
