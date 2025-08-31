@@ -122,13 +122,6 @@ export function MonitorList() {
         {!loading && showFallback && monitors.length === 0 && (
           <div className="p-12 flex flex-col items-center text-center">
             <div className="text-muted-400 mb-4">No monitors configured yet</div>
-            <button
-              onClick={() => setShowForm(true)}
-              className="flex items-center space-x-2 bg-accent-ice text-black text-[12px] px-4 py-2 rounded-btn font-medium hover:bg-accent-ice/90 transition-colors"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add your first monitor</span>
-            </button>
           </div>
         )}
 
