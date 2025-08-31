@@ -7,35 +7,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum MonitorStatus {
+  UP
+  DOWN
+}
+
 model User {
   id              String        @id             @default(uuid())
   username        String
   email           String
   createdAt       DateTime                      @default(now())
   updatedAt       DateTime?     @updatedAt
-  service         Service[]
   website         Websites[]
+  service         Service[]
 }
 
 model Websites {
   id              String        @id             @default(uuid())
   url             String        @unique
   userId          String
-  status          String?
+  status          MonitorStatus                 @default(DOWN)
   lastChecked     DateTime?
+  avgResponseMs   Int?
+  createdAt       DateTime?                     @default(now())
+  updatedAt       DateTime?     @updatedAt
   responseTime    String?
   service         Service?
 
   user            User          @relation(fields: [userId], references: [id])
+  checks          WebsiteLog[]
+
+  @@index([userId])
 }
 
 model Service {
   id              String        @id             @default(uuid())
-  phone           String        @unique
-  email           String        @unique
+  phone           String
+  email           String
   websiteId       String?       @unique
   userId          String        
 
   user            User          @relation(fields: [userId], references: [id])
   website         Websites?     @relation(fields: [websiteId], references: [id])
+}
+
+model WebsiteLog {
+  id              String        @id             @default(uuid())
+  websiteId       String        
+  checkedAt       DateTime                      @default(now())
+  responseMs      Int?
+
+  website         Websites     @relation(fields: [websiteId], references: [id])
+  
+  @@index([websiteId, checkedAt])
+  @@index([checkedAt])
 }

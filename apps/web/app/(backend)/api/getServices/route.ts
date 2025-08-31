@@ -33,7 +33,7 @@ export async function GET() {
         id: service.id,
         name: site?.url ?? "Unknown",
         url: site?.url ?? "",
-        status: (site?.status?.toLowerCase() as "up" | "down" | "paused") ?? "unknown",
+        status: site?.status as "UP" | "DOWN",
         uptime30d: Math.random() * (100 - 95) + 95,
         responseTime: site?.responseTime ? parseInt(site.responseTime) : 0,
         lastChecked: site?.lastChecked ? site.lastChecked.toISOString() : ""

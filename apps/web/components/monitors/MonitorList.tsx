@@ -6,6 +6,7 @@ import { useAccessibility } from '../../providers/AccessibilityProvider';
 import { UptimeSparkline } from '../../components/charts/UptimeSparkline';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 
 interface Monitor {
   id: string;
@@ -158,11 +159,10 @@ export function MonitorList() {
                       </td>
                       <td className="py-4 px-6">
                         <div>
-                          <div className="text-sm font-medium text-text-100">{monitor.name}</div>
-                          <div className="text-xs text-muted-400 flex items-center space-x-1">
-                            <span>{monitor.url}</span>
+                          <Link href={monitor.url} target='blank' className="text-sm font-medium flex gap-1 flex-row items-center text-text-100">
+                            {monitor.url}
                             <ExternalLink className="w-3 h-3" />
-                          </div>
+                          </Link>
                         </div>
                       </td>
                       <td className="py-4 px-6">

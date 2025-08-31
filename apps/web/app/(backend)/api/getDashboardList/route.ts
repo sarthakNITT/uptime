@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
+    await PC.$connect().then(() => console.log("Connected to db"));
+
     const user = await currentUser();
     if (!user?.username) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -17,63 +19,70 @@ export async function GET() {
     const services = await PC.service.findMany({ where: { userId: dbUser.id } });
     const websites = await PC.websites.findMany({ where: { userId: dbUser.id } });
 
-    const websiteById = new Map<string, any>();
-    websites.forEach(w => websiteById.set(w.id, w));
+    const websiteMap = new Map<string, any>();
+    websites.forEach((w) => websiteMap.set(w.id, w));
 
-    const monitors = services.map(service => {
-      const site = service.websiteId ? websiteById.get(service.websiteId) : undefined;
+    const monitors: {
+      websiteId: string | null;
+      status: "UP" | "DOWN";
+      responseTime: number | null;
+      lastChecked: string | null;
+      checkCount: number | null;
+    }[] = [];
 
-      const rawStatus = site?.status ? String(site.status).toLowerCase() : "unknown";
-      const status = rawStatus === "up" || rawStatus === "down" || rawStatus === "paused"
-        ? rawStatus
-        : "unknown";
+    for (const svc of services) {
+      const site = svc.websiteId ? websiteMap.get(svc.websiteId) : undefined;
+      if (!site) continue;
 
-      const rtParsed = site?.responseTime ? parseInt(String(site.responseTime), 10) : NaN;
-      const responseTime = Number.isFinite(rtParsed) ? rtParsed : null;
+      const statusRaw = site.status ? String(site.status) : "";
+      const status = statusRaw === "UP" ? "UP" : "DOWN";
 
-      const uptime30d = site ? ((site as any).uptime30d ?? (site as any).uptime ?? null) : null;
-      const checkCount = site ? ((site as any).checkCount ?? (site as any).checks ?? (site as any).totalChecks ?? null) : null;
+      let responseTime: number | null = null;
+      if (site.avgResponseMs !== null && site.avgResponseMs !== undefined) {
+        responseTime = Number(site.avgResponseMs);
+      } else if (site.responseTime) {
+        const p = parseInt(String(site.responseTime), 10);
+        responseTime = Number.isFinite(p) ? p : null;
+      }
 
-      return {
-        websiteId: site?.id ?? null,
+      const checkCount = (site as any).checkCount ?? null;
+
+      monitors.push({
+        websiteId: site.id ?? null,
         status,
-        uptime30d,
         responseTime,
-        lastChecked: site?.lastChecked ?? null,
-        checkCount
-      };
-    });
+        lastChecked: site.lastChecked ? new Date(site.lastChecked).toISOString() : null,
+        checkCount,
+      });
+    }
 
-    const monitorsWithSite = monitors.filter(m => m.websiteId !== null);
+    const monitorsWithSite = monitors;
 
     const totalMonitors = monitorsWithSite.length;
-    const servicesOnline = monitorsWithSite.filter(m => m.status === "up").length;
-    const activeAlerts = monitorsWithSite.filter(m => m.status === "down").length;
+    const servicesOnline = monitorsWithSite.filter((m) => m.status === "UP").length;
+    const activeAlerts = monitorsWithSite.filter((m) => m.status === "DOWN").length;
 
-    const responseTimes = monitorsWithSite.map(m => m.responseTime).filter((v): v is number => v !== null);
-    const averageResponseTime = responseTimes.length > 0
-      ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length)
-      : 0;
-
-    const uptimeValues = monitorsWithSite
-      .map(m => (m.uptime30d !== null && m.uptime30d !== undefined ? Number(m.uptime30d) : null))
+    const responseTimes = monitorsWithSite
+      .map((m) => m.responseTime)
       .filter((v): v is number => v !== null && !Number.isNaN(v));
 
+    const averageResponseTime =
+      responseTimes.length > 0
+        ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length)
+        : 0;
+
     let averageUptime: number | null = null;
-    if (uptimeValues.length > 0) {
-      const sum = uptimeValues.reduce((acc, v) => acc + Math.max(0, Math.min(100, v)), 0);
-      averageUptime = Math.round((sum / uptimeValues.length) * 100) / 100;
-    } else if (totalMonitors > 0) {
+    if (totalMonitors > 0) {
       averageUptime = Math.round((servicesOnline / totalMonitors) * 10000) / 100;
     }
 
-    const explicitChecks = monitorsWithSite
-      .map(m => (m.checkCount !== null && m.checkCount !== undefined ? Number(m.checkCount) : null))
-      .filter((v): v is number => v !== null && !Number.isNaN(v));
-
-    const totalChecks = explicitChecks.length > 0
-      ? explicitChecks.reduce((a, b) => a + b, 0)
-      : monitorsWithSite.filter(m => m.lastChecked !== null).length;
+    let totalChecks = 0;
+    const websiteIds = websites.map((w) => w.id);
+    if (websiteIds.length > 0) {
+      totalChecks = await PC.websiteLog.count({
+        where: { websiteId: { in: websiteIds } },
+      });
+    }
 
     const payload = {
       totalMonitors,
@@ -81,7 +90,7 @@ export async function GET() {
       activeAlerts,
       averageResponseTime,
       servicesOnline,
-      totalChecks
+      totalChecks,
     };
 
     return NextResponse.json(payload);

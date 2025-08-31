@@ -6,18 +6,38 @@ export async function POST (req: NextRequest) {
     await PC.$connect().then(()=>{
         console.log("Connected to db");
     });
+
     const {phone, email, url} = await req.json();
 
     const user = await currentUser();
+
+    if(!user){
+        console.log(`User not found: Unauthenticated, Returning back to landing page`);
+        return NextResponse.json({
+            message: "User not found: Unauthenticated, Returning back to landing page"
+        });
+    }
+
     const findDb = await PC.user.findFirst({
         where: {username: user?.username ?? ""}
     })
+
     console.log(user?.username);
     console.log(findDb?.username);
+
+    if(user.username !== findDb?.username) {
+        console.log(`Invalid user`);
+        return NextResponse.json({
+            message: "Invalid user"
+        })
+    }
+
     if (!findDb?.id) {
         return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
+
     console.log(1);
+    
     try {
         await PC.$transaction(async (tx) => {
             const website = await tx.websites.create({
