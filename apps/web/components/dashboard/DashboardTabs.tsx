@@ -9,8 +9,8 @@ import { SettingsTab } from './tabs/SettingsTab';
 
 export function DashboardTabs() {
   return (
-    <Tabs defaultValue="monitors" className="w-full">
-      <TabsList className="grid w-full grid-cols-4 bg-bg-800 border border-white/10">
+    <Tabs defaultValue="monitors" className="w-full mb-10">
+      {/* <TabsList className="grid w-full grid-cols-4 bg-bg-800 border border-white/10">
         <TabsTrigger value="monitors" className="data-[state=active]:bg-accent-ice/10 data-[state=active]:text-accent-ice">
           Monitors
         </TabsTrigger>
@@ -23,7 +23,7 @@ export function DashboardTabs() {
         <TabsTrigger value="settings" className="data-[state=active]:bg-accent-ice/10 data-[state=active]:text-accent-ice">
           Settings
         </TabsTrigger>
-      </TabsList>
+      </TabsList> */}
 
       <TabsContent value="monitors" className="mt-6">
         <MonitorsTab />

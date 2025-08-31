@@ -2,8 +2,8 @@
 
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
-import { DashboardOverview } from '../../components/dashboard/DashboardOverview';
 import { DashboardTabs } from '../../components/dashboard/DashboardTabs';
+import { DashboardOverview } from '../../components/dashboard/DashboardOverview';
 
 export default function DashboardPage() {
   return (
@@ -18,8 +18,8 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <DashboardOverview />
           <DashboardTabs />
+          <DashboardOverview/>
         </div>
       </main>
       <Footer />
