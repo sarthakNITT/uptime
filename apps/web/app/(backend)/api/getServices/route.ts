@@ -41,7 +41,7 @@ export async function GET() {
     });
 
     return NextResponse.json(monitors);
-  } catch (err: any) {
+  } catch (err) {
     console.error("Error in getServices:", err);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }

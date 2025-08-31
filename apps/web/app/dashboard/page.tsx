@@ -4,6 +4,7 @@ import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 import { DashboardTabs } from '../../components/dashboard/DashboardTabs';
 import { DashboardOverview } from '../../components/dashboard/DashboardOverview';
+import ResponseTimeChart from '../../components/charts/dashboardChart';
 
 export default function DashboardPage() {
   return (
@@ -17,7 +18,9 @@ export default function DashboardPage() {
               Monitor your services and track performance metrics.
             </p>
           </div>
-
+          <div>
+            <ResponseTimeChart/>
+          </div>
           <DashboardTabs />
           <DashboardOverview/>
         </div>

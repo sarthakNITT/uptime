@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink, Edit, Trash2, Play, Pause, Plus, Loader2 } from 'lucide-react';
+import { ExternalLink, Edit, Trash2, Play, Pause, Loader2 } from 'lucide-react';
 import { useAccessibility } from '../../providers/AccessibilityProvider';
 import { UptimeSparkline } from '../../components/charts/UptimeSparkline';
 import { useState, useEffect } from 'react';
@@ -21,7 +21,6 @@ interface Monitor {
 export function MonitorList() {
   const { animationsEnabled } = useAccessibility();
   const [monitors, setMonitors] = useState<Monitor[]>([]);
-  const [showForm, setShowForm] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [showFallback, setShowFallback] = useState(false);

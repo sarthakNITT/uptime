@@ -94,7 +94,7 @@ export async function GET() {
     };
 
     return NextResponse.json(payload);
-  } catch (err: any) {
+  } catch (err) {
     console.error("Error in getServices metrics:", err);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
